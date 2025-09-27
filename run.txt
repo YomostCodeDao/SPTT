@@ -9,3 +9,21 @@ uvicorn main:app --reload --port 3000
 
 
 source .venv/Scripts/activate
+
+#1. Chạy Backend
+- Mở git bash
+- cd backend
+- source .venv/Scripts/activate
+- uvicorn main:app --reload --port 3000
+
+#2. Chạy Frontend
+- cd frontend
+- npm run dev 
+
+tính trung bình độ chính xác => suy ra level
+chọn vid A1: <= 70% mức 1, 85% mức 2, 100% mức 3
+chọn vid A2: <= <60% mức 1, 80% mức 2, 100% mức 3
+chọn vid B1: <= <50% mức 1, 70% mức 2, 100% mức 3
+chọn vid B2: <= <45% mức 1, 60% mức 2, 100% mức 3
+chọn vid C1: <= <40% mức 1, 55% mức 2, 100% mức 3
+chọn vid C2: <= <35% mức 1, 50% mức 2, 100% mức 3

@@ -1,6 +1,15 @@
 export type DiffResult = { acc: number; html: string };
 
-export function diffWords(ref: string, hyp: string): DiffResult {
+type DiffOpts = {
+    /** Nếu true thì KHÔNG show từ đúng bị thiếu (tránh lộ đáp án), thay bằng ô vuông */
+    maskMissing?: boolean;
+};
+
+/**
+ * So khớp theo từ: trả về độ chính xác (%) và HTML để highlight.
+ * class: .hl eq | .hl sub | .hl ins | .hl del
+ */
+export function diffWords(ref: string, hyp: string, opts: DiffOpts = {}): DiffResult {
     const r = ref.trim().split(/\s+/).filter(Boolean);
     const h = hyp.trim().split(/\s+/).filter(Boolean);
     const dp = Array(r.length + 1)
@@ -13,7 +22,11 @@ export function diffWords(ref: string, hyp: string): DiffResult {
     for (let i = 1; i <= r.length; i++) {
         for (let j = 1; j <= h.length; j++) {
             const cost = r[i - 1].toLowerCase() === h[j - 1].toLowerCase() ? 0 : 1;
-            dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
+            dp[i][j] = Math.min(
+                dp[i - 1][j] + 1,
+                dp[i][j - 1] + 1,
+                dp[i - 1][j - 1] + cost
+            );
         }
     }
 
@@ -34,13 +47,17 @@ export function diffWords(ref: string, hyp: string): DiffResult {
 
     const correct = ops.filter((o) => o.op === "eq").length;
     const acc = r.length ? Math.round((correct / r.length) * 100) : 0;
-    const html = ops
-        .map((o) => {
-            if (o.op === "eq") return `<span class="hl eq">${o.hyp || o.ref}</span>`;
-            if (o.op === "sub") return `<span class="hl sub">${o.hyp}↔${o.ref}</span>`;
-            if (o.op === "ins") return `<span class="hl ins">+${o.hyp}</span>`;
-            return `<span class="hl del">-${o.ref}</span>`;
-        })
-        .join(" ");
+
+    const html = ops.map((o) => {
+        if (o.op === "eq") return `<span class="hl eq">${o.hyp || o.ref}</span>`;
+        if (o.op === "sub") return `<span class="hl sub">${o.hyp}↔▢▢▢</span>`; // không lộ ref
+        if (o.op === "ins") return `<span class="hl ins">+${o.hyp}</span>`;
+        // del = thiếu từ trong ref => mask
+        const masked = opts.maskMissing ? "▢▢▢" : (o.ref ?? "");
+        return `<span class="hl del">-${masked}</span>`;
+    }).join(" ");
+
     return { acc, html };
 }
+
+export default diffWords;
