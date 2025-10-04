@@ -13,7 +13,8 @@ def get_model() -> WhisperModel:
         _model = WhisperModel(WHISPER_MODEL_NAME, device="cpu", compute_type="int8")
     return _model
 
-router = APIRouter(prefix="/api", tags=["upload"])
+# ❌ Đừng prefix /api ở đây nữa
+router = APIRouter(tags=["Upload"])
 
 @router.post("/upload-audio")
 async def upload_audio(file: UploadFile = File(...), language: Optional[str] = None):
@@ -28,27 +29,22 @@ async def upload_audio(file: UploadFile = File(...), language: Optional[str] = N
     try:
         model = get_model()
         segments_iter, info = model.transcribe(
-            tmp_path,
-            language=language,
-            beam_size=5,
-            vad_filter=True
+            tmp_path, language=language, beam_size=5, vad_filter=True
         )
 
-        segments = []
-        texts = []
-        # NOTE: faster-whisper trả generator; gom lại thành list có start/end/text
+        segments, texts = [], []
         for i, seg in enumerate(segments_iter):
             segments.append({
                 "id": i,
-                "start": float(seg.start) if seg.start is not None else 0.0,
-                "end": float(seg.end) if seg.end is not None else 0.0,
+                "start": float(seg.start or 0.0),
+                "end": float(seg.end or 0.0),
                 "text": seg.text.strip(),
             })
             texts.append(seg.text.strip())
 
         return {
             "text": " ".join(texts).strip(),
-            "segments": segments,  # <<==== timestamps cho từng câu
+            "segments": segments,
             "language": getattr(info, "language", None),
             "language_probability": getattr(info, "language_probability", None),
             "used_model": WHISPER_MODEL_NAME,

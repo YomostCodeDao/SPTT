@@ -12,7 +12,6 @@ python-jose[cryptography]==3.3.0
 # audio + whisper
 faster-whisper==1.0.3
 soundfile==0.12.1
-av==12.3.0
 numpy==2.1.1
 
 # CORS

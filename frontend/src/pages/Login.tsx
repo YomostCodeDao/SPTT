@@ -17,13 +17,17 @@ export default function Login() {
         e.preventDefault();
         if (!email || !pwd) return setErr("Please enter email and password.");
         try {
-            setLoading(true); setErr("");
-            // TODO: fetch real backend login
-            // const r = await fetch("/api/login", ...)
-            // const { token } = await r.json()
-            const token = "demo-token";
+            setLoading(true);
+            setErr("");
+
+            // TODO: gọi real backend login
+            // const res = await fetch("/auth/login", { method: "POST", ... })
+            // const { token } = await res.json()
+            const token = "demo-token"; // giả lập
             saveToken(token);
-            nav("/practice", { replace: true });
+
+            // 🚀 Sau login → điều hướng sang Placement Test
+            nav("/placement-test", { replace: true });
         } catch {
             setErr("Login failed. Try again.");
         } finally {
@@ -44,20 +48,42 @@ export default function Login() {
                 <form onSubmit={onSubmit} className="space-y-4">
                     <div>
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="me@example.com" />
+                        <Input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="me@example.com"
+                        />
                     </div>
 
                     <div>
                         <div className="flex items-center justify-between">
                             <Label htmlFor="password">Password</Label>
-                            <a href="#" className="text-xs text-neutral-400 hover:text-neutral-200">Forgot your password?</a>
+                            <a
+                                href="#"
+                                className="text-xs text-neutral-400 hover:text-neutral-200"
+                            >
+                                Forgot your password?
+                            </a>
                         </div>
-                        <Input id="password" type="password" value={pwd} onChange={(e) => setPwd(e.target.value)} />
+                        <Input
+                            id="password"
+                            type="password"
+                            value={pwd}
+                            onChange={(e) => setPwd(e.target.value)}
+                        />
                     </div>
 
                     {err && <p className="text-sm text-red-400">{err}</p>}
 
-                    <Button type="submit" disabled={loading} className="w-full">{loading ? "Logging in..." : "Login"}</Button>
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full"
+                    >
+                        {loading ? "Logging in..." : "Login"}
+                    </Button>
 
                     <Button variant="inverted" className="w-full font-medium">
                         Login with Google

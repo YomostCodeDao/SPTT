@@ -6,27 +6,32 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+# Database
 from database import Base, engine
-from auth import models as auth_models  # giữ để SQLAlchemy tạo bảng users
+from auth import models as auth_models  # Để SQLAlchemy tự tạo bảng users
+
+# Routers
 from auth.routes import router as auth_router
 from routes.profile import router as profile_router
 from routes.upload import router as upload_router
+from routes.placement import router as placement_router
 
-# ===================== DB init =====================
+# ===================== Init DB =====================
 Base.metadata.create_all(bind=engine)
 
+# ===================== FastAPI App =====================
 app = FastAPI(title="English Practice Backend")
 
 # ===================== CORS =====================
 origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
 if not origins:
-    # FE dev (Vite): 5173; Bạn có thể thêm domain khác nếu cần
+    # FE dev: Vite (5173), React dev (3000)
     origins = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "*",  # dev
+        "*",  # dev fallback
     ]
 
 app.add_middleware(
@@ -37,24 +42,27 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ===================== Static: /static -> backend/assets =====================
+# ===================== Static Files =====================
 BASE_DIR = Path(__file__).resolve().parent
 ASSETS_DIR = BASE_DIR / "assets"
-ASSETS_DIR.mkdir(parents=True, exist_ok=True)  # đảm bảo tồn tại
-# cấu trúc mong muốn: backend/assets/levels/A1/*.mp3 ... C2/*.mp3
+ASSETS_DIR.mkdir(parents=True, exist_ok=True)
+
+# Map URL /static -> backend/assets
+# Ví dụ: backend/assets/levels/A1/file.mp3 => http://127.0.0.1:3000/static/levels/A1/file.mp3
 app.mount("/static", StaticFiles(directory=str(ASSETS_DIR)), name="static")
 
-# ===================== Routers (giữ nguyên) =====================
-app.include_router(auth_router)     # /auth/...
-app.include_router(profile_router)  # /api/profile
-app.include_router(upload_router)   # /api/upload-audio
+# ===================== Include Routers =====================
+app.include_router(auth_router, prefix="/auth", tags=["Auth"])
+app.include_router(profile_router, prefix="/api/profile", tags=["Profile"])
+app.include_router(upload_router, prefix="/api/upload", tags=["Upload"])
+app.include_router(placement_router)  # prefix đã khai báo trong placement.py
 
-# ===================== Level APIs (mới, tùy chọn) =====================
+# ===================== Level APIs =====================
 @app.get("/api/levels/{level}/random")
 def pick_random_level_audio(level: str):
     """
     Trả về 1 file mp3 ngẫu nhiên theo level (A1..C2).
-    audio_url là đường dẫn tĩnh để FE fetch: /static/levels/<LV>/<file>.mp3
+    audio_url: FE fetch từ /static/levels/<LV>/<file>.mp3
     """
     lv = level.upper()
     level_dir = ASSETS_DIR / "levels" / lv
@@ -65,13 +73,14 @@ def pick_random_level_audio(level: str):
         raise HTTPException(status_code=404, detail=f"No audio found in level {lv}")
 
     pick = random.choice(files)
-    rel = pick.relative_to(ASSETS_DIR).as_posix()  # levels/A1/sample.mp3
+    rel = pick.relative_to(ASSETS_DIR).as_posix()  # ví dụ: levels/A1/sample.mp3
     return {
         "level": lv,
         "file": pick.name,
         "audio_url": f"/static/{rel}",
     }
 
+# ===================== Root =====================
 @app.get("/")
 def root():
-    return {"ok": True, "message": "Backend running"}
+    return {"ok": True, "message": "Backend running 🚀"}

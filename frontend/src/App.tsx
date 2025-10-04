@@ -1,7 +1,9 @@
+// frontend/src/App.tsx
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "@/pages/Login";
 import Practice from "@/pages/Practice";
 import Profile from "@/pages/Profile";
+import PlacementTest from "@/pages/PlacementTest";
 import ProtectedRoute from "@/routes/ProtectedRoute";
 
 const router = createBrowserRouter([
@@ -11,6 +13,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <ProtectedRoute />,
     children: [
+      { path: "/placement-test", element: <PlacementTest /> },
       { path: "/practice", element: <Practice /> },
       { path: "/profile", element: <Profile /> },
     ],

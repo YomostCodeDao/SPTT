@@ -1,29 +1,10 @@
-uvicorn main:app --host 127.0.0.1 --port 9000 --reload
-
-npm start
-
-npx react-scripts start
-
-uvicorn main:app --reload --port 3000
-
-
-
-source .venv/Scripts/activate
-
 #1. Chạy Backend
-- Mở git bash
-- cd backend
-- source .venv/Scripts/activate
-- uvicorn main:app --reload --port 3000
+Step 1: Mở git bash
+Step 2: cd backend
+Step 3: source .venv/Scripts/activate
+Step 4: pip install -r requirements.txt (Chạy lần đầu - 1 lần duy nhất, bỏ qua lệnh này cho các lần sau)
+Step 5: uvicorn main:app --reload --port 3000
 
 #2. Chạy Frontend
-- cd frontend
-- npm run dev 
-
-tính trung bình độ chính xác => suy ra level
-chọn vid A1: <= 70% mức 1, 85% mức 2, 100% mức 3
-chọn vid A2: <= <60% mức 1, 80% mức 2, 100% mức 3
-chọn vid B1: <= <50% mức 1, 70% mức 2, 100% mức 3
-chọn vid B2: <= <45% mức 1, 60% mức 2, 100% mức 3
-chọn vid C1: <= <40% mức 1, 55% mức 2, 100% mức 3
-chọn vid C2: <= <35% mức 1, 50% mức 2, 100% mức 3
+Step 1: cd frontend
+Step 2: npm run dev 
