@@ -1,5 +1,5 @@
 # Unit 1. Chạy Backend
-Step 1: Mở git bash
+Step 1: Mở git bash <br/>
 Step 2: cd backend
 Step 3: source .venv/Scripts/activate
 Step 4: pip install -r requirements.txt (Chạy lần đầu - 1 lần duy nhất, bỏ qua lệnh này cho các lần sau)
