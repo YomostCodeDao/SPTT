@@ -8,3 +8,5 @@ Step 5: uvicorn main:app --reload --port 3000
 #2. Chạy Frontend
 Step 1: cd frontend
 Step 2: npm run dev 
+
+    # My Project Title
