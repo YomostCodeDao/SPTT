@@ -9,5 +9,5 @@ Step 5: uvicorn main:app --reload --port 3000 <br/>
 Step 1: cd frontend <br/>
 Step 2: npm run dev <br/>
 
-# Link full code Google Drive source
-[a link] (https://drive.google.com/drive/folders/1mouJvx3Nz2n5NxHyAJHrs2moZGrGTJNT?hl=vi)
+# Link full code Google Drive source <br/>
+https://drive.google.com/drive/folders/1mouJvx3Nz2n5NxHyAJHrs2moZGrGTJNT?hl=vi
