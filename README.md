@@ -9,5 +9,5 @@ Step 5: uvicorn main:app --reload --port 3000 <br/>
 Step 1: cd frontend <br/>
 Step 2: npm run dev <br/>
 
-# Link full code Google Drive source <br/>
+# Link full source code <br/>
 https://byvn.net/bHXW
